@@ -90,23 +90,25 @@
       updateUI();
     }
 
-    function gameOver() {
-
-    }
-
     let playRoundFromUI = (event) => {
-      if (!isGameGoing()) {
-        return gameOver();
-      }
+      if (!isGameGoing()) return gameOver();
+
       let playerSelection = event.target.id;
+      event.target.classList.add('playing')
       let computerSelection = computerPlay();
       playRound(playerSelection, computerSelection)
       updateUI()
     };
 
+    function removeTransformation(event) {
+      console.log('henlo!')
+      this.classList.remove('playing')
+    }
+
     wpns = document.querySelectorAll('.weapon')
     wpns.forEach((weapon) => {
       weapon.addEventListener('click', playRoundFromUI)
+      weapon.addEventListener('transitionend', removeTransformation)
     })
     document.querySelector('#reset').addEventListener('click', resetGame)
   </script>

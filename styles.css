@@ -2,9 +2,17 @@ body {
 	background-color: #DDD;
 }
 .weapon {
+	box-sizing: border-box;
 	height: 200px;
+	padding: 5px;
+	transition: all 0.05s;
 }
 
 #reset {
 	height: 200px;
+}
+
+.playing {
+	border: 1px solid black;
+	padding: 4px;
 }
