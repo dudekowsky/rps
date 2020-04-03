@@ -4,3 +4,7 @@ body {
 .weapon {
 	height: 200px;
 }
+
+#reset {
+	height: 200px;
+}

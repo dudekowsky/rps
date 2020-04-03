@@ -8,14 +8,19 @@
 </head>
 <body>
   <h1>Choose your fighter</h1>
+  <h2 id="gameOver"></h2>
   <div id="items">
     <img src="./stein.jpg" class="weapon" id="rock">
     <img src="./schere.jpg" class="weapon" id="scissors">
     <img src="./papier.jpg" class="weapon" id="paper">
-    <p id="userSelection"></p>
+    <img src="./reset.jpg" id="reset">
+    <p id="playerSelection"></p>
     <p id="computerSelection"></p>
     <p id="result"></p>
+    <p id="score"></p>
+    <p id="finalWinner"></p>
   </div>
+
   <script>
     let computerPlay = () => {
       let arr = ['rock', 'paper', 'scissors'];
@@ -23,58 +28,87 @@
       return arr[idx];
     }
 
-    // let userPlay = () => {
-    //   let input = prompt("Rock, Paper or Scissors?");
-    //   switch(input.toLowerCase()){
-    //     case "rock": return "rock";
-    //     case "scissors": return "scissors";
-    //     case "paper": return "paper";
-    //     default: alert("couldn't understand. try again")
-    //   }
-    // }
-
-    let playRound = (userSelection, computerSelection) => {
-      if (userSelection == computerSelection) return "Draw";
-      if ((userSelection == "rock" && computerSelection == "scissors") || (userSelection == "scissors" && computerSelection == "paper") || (userSelection == "paper" && computerSelection == "rock")) return "User wins";
-      return "Computer wins"
+    let playRound = (playerSelection, computerSelection) => {
+      score.lastplayerSelection = playerSelection;
+      score.lastComputerSelection = computerSelection;
+      if (playerSelection == computerSelection) return draw();
+      if ((playerSelection == "rock" && computerSelection == "scissors") || (playerSelection == "scissors" && computerSelection == "paper") || (playerSelection == "paper" && computerSelection == "rock")) return playerWins();
+      computerWins();
     }
 
-    let game = (rounds = 5) => {
-      let scoreHuman = 0;
-      let scoreComputer = 0;
-      let draws = 0;
-      for (let i = 0; i < 5; i++) {
-        switch(playRound(userPlay(), computerPlay())) {
-          case "User wins": 
-            scoreHuman++;
-            break;
-          case "Computer wins": 
-            scoreComputer++;
-            break;
-          case "Draw": 
-            draws++;
-            i--;
-            break;
-          default: { alert('something went wrong'); return }
-        }
-      }
-      console.log('Human score: ' + scoreHuman + ', Computer score: ' + scoreComputer + ", number of draws: " + draws);
-    };
+    function draw() {
+      score.draw++;
+      score.lastWinner = 'Nobody'
+    }
 
-    let playFromUI = (event) => {
+    function playerWins() {
+      score.player++
+      score.lastWinner = 'player'
+    }
+
+    function computerWins() {
+      score.computer++;
+      score.lastWinner = 'computer'
+    }
+
+    function updateUI() {
+      document.querySelector("#playerSelection").textContent = 'You chose: ' + score.lastplayerSelection;
+      document.querySelector("#computerSelection").textContent = 'Computer chose: ' + score.lastComputerSelection;
+      document.querySelector("#result").textContent = 'Winner of this round: ' + score.lastWinner
+      document.querySelector("#score").textContent = `Player: ${score.player}, Computer: ${score.computer}, draws: ${score.draw}`
+      if (!isGameGoing()) {
+        document.querySelector("#finalWinner").textContent = 'The final winner is: ' + score.lastWinner
+        document.querySelector('#gameOver').textContent = 'GAME OVER! HIT RESET'
+      } else {
+        document.querySelector("#finalWinner").textContent = ''
+        document.querySelector('#gameOver').textContent = ''
+      }
+    }
+
+    let score = {
+      player: 0,
+      computer: 0,
+      draw: 0,
+      lastplayerSelection: '',
+      lastComputerSelection: '',
+      lastWinner: ''
+    }
+
+    function isGameGoing() {
+      return (score.player < 5 && score.computer < 5);
+    }
+
+    function resetGame() {
+      score = {
+        player: 0,
+        computer: 0,
+        draw: 0,
+        lastplayerSelection: '',
+        lastComputerSelection: '',
+        lastWinner: ''
+      }
+      updateUI();
+    }
+
+    function gameOver() {
+
+    }
+
+    let playRoundFromUI = (event) => {
+      if (!isGameGoing()) {
+        return gameOver();
+      }
       let playerSelection = event.target.id;
       let computerSelection = computerPlay();
-      let result = playRound(playerSelection, computerSelection)
-      document.querySelector('#result').textContent = result;
-      document.querySelector('#userSelection').textContent = "You chose: " + playerSelection;
-      document.querySelector('#computerSelection').textContent = "Computer chose: " + computerSelection;
+      playRound(playerSelection, computerSelection)
+      updateUI()
     };
 
     wpns = document.querySelectorAll('.weapon')
     wpns.forEach((weapon) => {
-      weapon.addEventListener('click', playFromUI)
+      weapon.addEventListener('click', playRoundFromUI)
     })
-
+    document.querySelector('#reset').addEventListener('click', resetGame)
   </script>
 </body>
 </html>
