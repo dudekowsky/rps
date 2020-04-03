@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <title>
+    Stein Schere Papier
+  </title>
+</head>
+<body>
+  <h1>Choose your fighter</h1>
+  <div id="items">
+    <img src="./stein.jpg" class="weapon" id="rock">
+    <img src="./schere.jpg" class="weapon" id="scissors">
+    <img src="./papier.jpg" class="weapon" id="paper">
+    <p id="userSelection"></p>
+    <p id="computerSelection"></p>
+    <p id="result"></p>
+  </div>
+  <script>
+    let computerPlay = () => {
+      let arr = ['rock', 'paper', 'scissors'];
+      let idx = Math.floor(Math.random() * arr.length);
+      return arr[idx];
+    }
+
+    // let userPlay = () => {
+    //   let input = prompt("Rock, Paper or Scissors?");
+    //   switch(input.toLowerCase()){
+    //     case "rock": return "rock";
+    //     case "scissors": return "scissors";
+    //     case "paper": return "paper";
+    //     default: alert("couldn't understand. try again")
+    //   }
+    // }
+
+    let playRound = (userSelection, computerSelection) => {
+      if (userSelection == computerSelection) return "Draw";
+      if ((userSelection == "rock" && computerSelection == "scissors") || (userSelection == "scissors" && computerSelection == "paper") || (userSelection == "paper" && computerSelection == "rock")) return "User wins";
+      return "Computer wins"
+    }
+
+    let game = (rounds = 5) => {
+      let scoreHuman = 0;
+      let scoreComputer = 0;
+      let draws = 0;
+      for (let i = 0; i < 5; i++) {
+        switch(playRound(userPlay(), computerPlay())) {
+          case "User wins": 
+            scoreHuman++;
+            break;
+          case "Computer wins": 
+            scoreComputer++;
+            break;
+          case "Draw": 
+            draws++;
+            i--;
+            break;
+          default: { alert('something went wrong'); return }
+        }
+      }
+      console.log('Human score: ' + scoreHuman + ', Computer score: ' + scoreComputer + ", number of draws: " + draws);
+    };
+
+    let playFromUI = (event) => {
+      let playerSelection = event.target.id;
+      let computerSelection = computerPlay();
+      let result = playRound(playerSelection, computerSelection)
+      document.querySelector('#result').textContent = result;
+      document.querySelector('#userSelection').textContent = "You chose: " + playerSelection;
+      document.querySelector('#computerSelection').textContent = "Computer chose: " + computerSelection;
+    };
+
+    wpns = document.querySelectorAll('.weapon')
+    wpns.forEach((weapon) => {
+      weapon.addEventListener('click', playFromUI)
+    })
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+<body>
+  <script>
+    let computerPlay = () => {
+      let arr = ['rock', 'paper', 'scissors'];
+      let idx = Math.floor(Math.random() * arr.length);
+      return arr[idx];
+    }
+
+    let userPlay = () => {
+      let input = prompt("Rock, Paper or Scissors?");
+      switch(input.toLowerCase()){
+        case "rock": return "rock";
+        case "scissors": return "scissors";
+        case "paper": return "paper";
+        default: alert("couldn't understand. try again")
+      }
+    }
+
+    let playRound = (userSelection, computerSelection) => {
+      if (userSelection == computerSelection) return "Draw";
+      if ((userSelection == "rock" && computerSelection == "scissors") || (userSelection == "scissors" && computerSelection == "paper") || (userSelection == "paper" && computerSelection == "rock")) return "User wins";
+      return "Computer wins"
+    }
+
+    let game = (rounds = 5) => {
+      let scoreHuman = 0;
+      let scoreComputer = 0;
+      let draws = 0;
+      for (let i = 0; i < 5; i++) {
+        switch(playRound(userPlay(), computerPlay())) {
+          case "User wins": 
+            scoreHuman++;
+            break;
+          case "Computer wins": 
+            scoreComputer++;
+            break;
+          case "Draw": 
+            draws++;
+            i--;
+            break;
+          default: { alert('something went wrong'); return }
+        }
+      }
+      console.log('Human score: ' + scoreHuman + ', Computer score: ' + scoreComputer + ", number of draws: " + draws);
+    }
+  </script>
+</body>
+</html>
